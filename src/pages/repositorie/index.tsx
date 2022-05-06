@@ -1,5 +1,13 @@
-import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react";
-import { AiOutlineRight } from "react-icons/ai";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Image,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { MdExplore } from "react-icons/md";
 
 export default function Repositorie() {
@@ -11,11 +19,30 @@ export default function Repositorie() {
       width="960px"
       align="flex-start"
     >
-      <Flex as="header" width="100%" gap={4} mt={10}>
-        <MdExplore fontSize="32px" />
-        <Text>
-          <strong>github</strong>_explorer
-        </Text>
+      <Flex
+        as="header"
+        width="100%"
+        gap={4}
+        mt={10}
+        justifyContent="space-between"
+      >
+        <Flex>
+          <MdExplore fontSize="32px" />
+          <Text>
+            <strong>github</strong>_explorer
+          </Text>
+        </Flex>
+        <Flex>
+          <Button
+            bg="inherit"
+            color="gray.100"
+            fontWeight={700}
+            leftIcon={<AiOutlineLeft fontSize="1rem" color="gray.100" />}
+            variant="link"
+          >
+            Voltar
+          </Button>
+        </Flex>
       </Flex>
       <Flex flexDirection="column" gap="2.5rem">
         <Flex gap="2rem">
