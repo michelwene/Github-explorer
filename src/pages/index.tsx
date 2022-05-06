@@ -13,7 +13,7 @@ import type { NextPage } from "next";
 import { MdExplore } from "react-icons/md";
 import { AiOutlineRight } from "react-icons/ai";
 
-const Home: NextPage = () => {
+export default function Home() {
   return (
     <VStack as="section" maxWidth="714px" spacing={28} align="flex-start">
       <Flex as="header" width="100%" gap={4} mt={10}>
@@ -173,6 +173,4 @@ const Home: NextPage = () => {
       </VStack>
     </VStack>
   );
-};
-
-export default Home;
+}
