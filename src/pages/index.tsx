@@ -17,6 +17,9 @@ import { api } from "../services/api";
 import { useState } from "react";
 import { IRepositoryData } from "../types/repository";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import Link from "next/link";
+import Router from "next/router";
+import { GetServerSideProps } from "next";
 
 type FormInputFields = {
   name?: string;
@@ -35,24 +38,6 @@ export default function Home({
   total_count: initialTotalPages,
   repositories: initialData,
 }: IProps) {
-  const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [repositorie, setRepositorie] =
-    useState<IRepositoryData[]>(initialData);
-
-  const handleNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
   const {
     register,
     handleSubmit,
@@ -60,6 +45,12 @@ export default function Home({
   } = useForm({
     resolver: yupResolver(schemaFromInputField),
   });
+
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [repositorie, setRepositorie] =
+    useState<IRepositoryData[]>(initialData);
 
   async function handleSubmitForm(data: FormInputFields) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -73,13 +64,24 @@ export default function Home({
       });
       setRepositorie(response.data.items);
       setTotalPages(response.data.total_count);
-      console.log(repositorie);
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
     }
   }
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <VStack as="section" maxWidth="714px" spacing={28} align="flex-start">
@@ -124,18 +126,22 @@ export default function Home({
               name={repo.full_name}
               description={repo.description}
               imageUrl={repo.owner.avatar_url}
+              onClick={() => {
+                console.log(repo);
+              }}
             />
           </>
         ))}
         <Flex flexDirection="column" gap="1" align="center">
           <Text>
-            Página <strong>{page}</strong> de <strong>{totalPages}</strong>
+            <strong>{page}</strong> de{" "}
+            <strong>{Math.ceil(totalPages / 5)}</strong>
           </Text>
           <HStack spacing={4}>
-            <Button>
+            <Button onClick={handlePreviousPage} disabled={page === 1}>
               <AiOutlineArrowLeft />
             </Button>
-            <Button>
+            <Button onClick={handleNextPage} disabled={page === totalPages}>
               <AiOutlineArrowRight />
             </Button>
           </HStack>

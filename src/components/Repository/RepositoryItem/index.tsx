@@ -4,16 +4,15 @@ import { AiOutlineRight } from "react-icons/ai";
 interface RepositoryProps {
   name: string;
   description: string;
-  children?: React.ReactNode;
   imageUrl?: string;
+  onClick: () => void;
 }
 
 export function RepositoryItem({
   name,
   description,
   imageUrl,
-  children,
-  ...rest
+  onClick,
 }: RepositoryProps) {
   return (
     <>
@@ -44,7 +43,7 @@ export function RepositoryItem({
             </Text>
           </Flex>
         </Flex>
-        <Box>
+        <Box onClick={onClick} cursor="pointer">
           <AiOutlineRight color="gray.100" />
         </Box>
       </Flex>
