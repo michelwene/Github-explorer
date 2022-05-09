@@ -7,8 +7,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { MdExplore } from "react-icons/md";
+import { Logo } from "../../components/Logo";
+import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
 
 export default function Repositorie() {
   return (
@@ -26,65 +29,29 @@ export default function Repositorie() {
         mt={10}
         justifyContent="space-between"
       >
+        <Logo />
         <Flex>
-          <MdExplore fontSize="32px" />
-          <Text>
-            <strong>github</strong>_explorer
-          </Text>
-        </Flex>
-        <Flex>
-          <Button
-            bg="inherit"
-            color="gray.100"
-            fontWeight={700}
-            leftIcon={<AiOutlineLeft fontSize="1rem" color="gray.100" />}
-            variant="link"
-          >
-            Voltar
-          </Button>
+          <Link href="/" passHref>
+            <Button
+              bg="inherit"
+              color="gray.100"
+              fontWeight={700}
+              leftIcon={<AiOutlineLeft fontSize="1rem" color="gray.100" />}
+              variant="link"
+            >
+              Voltar
+            </Button>
+          </Link>
         </Flex>
       </Flex>
-      <Flex flexDirection="column" gap="2.5rem">
-        <Flex gap="2rem">
-          <Box>
-            <Image
-              src="/Me 1.svg"
-              alt="foto de perfil do github"
-              borderRadius="50%"
-            />
-          </Box>
-          <Flex flexDirection="column">
-            <Heading as="h2">tiagoluchtenberg/repo</Heading>
-            <Text>Descrição do repo</Text>
-          </Flex>
-        </Flex>
-        <Flex gap="5rem">
-          <Box>
-            <Text fontSize="2.25rem" fontWeight={700}>
-              1808
-            </Text>
-            <Text fontSize="1.25rem" color="gray.300">
-              Stars
-            </Text>
-          </Box>
-          <Box>
-            <Text fontSize="2.25rem" fontWeight={700}>
-              48
-            </Text>
-            <Text fontSize="1.25rem" color="gray.300">
-              Forks
-            </Text>
-          </Box>
-          <Box>
-            <Text fontSize="2.25rem" fontWeight={700}>
-              67
-            </Text>
-            <Text fontSize="1.25rem" color="gray.300">
-              Issues abertas
-            </Text>
-          </Box>
-        </Flex>
-      </Flex>
+      <RepositoryInfo
+        imageUrl="Me1.svg"
+        name="tiagoluchtenberg/repo"
+        description="Descrição do repo"
+        stars={1080}
+        forks={20}
+        issues={67}
+      />
 
       <VStack spacing={4} width="100%" pb="1rem">
         <Flex

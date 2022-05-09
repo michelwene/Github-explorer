@@ -5,7 +5,7 @@ interface RepositoryProps {
   name: string;
   description: string;
   children?: React.ReactNode;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export function RepositoryItem({
