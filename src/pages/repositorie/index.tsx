@@ -109,6 +109,28 @@ export default function Repositorie() {
             <AiOutlineRight color="gray.100" />
           </Box>
         </Flex>
+        <Flex
+          align="center"
+          bg="white"
+          borderRadius="5px"
+          justifyContent="space-between"
+          p="1rem"
+          width="100%"
+        >
+          <Flex gap="1.3rem" align="center">
+            <Flex flexDirection="column">
+              <Heading as="h2" fontSize="1.5rem">
+                gostack-desafio-conceitos-react-native
+              </Heading>
+              <Text fontSize="1.2rem" color="gray.200">
+                Diego Fernandes
+              </Text>
+            </Flex>
+          </Flex>
+          <Box>
+            <AiOutlineRight color="gray.100" />
+          </Box>
+        </Flex>
       </VStack>
     </VStack>
   );
