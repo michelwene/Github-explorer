@@ -16,10 +16,7 @@ import { Input } from "../components/Form/input";
 import { api } from "../services/api";
 import { useState } from "react";
 import { IRepositoryData } from "../types/repository";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
-import Link from "next/link";
-import Router from "next/router";
-import { GetServerSideProps } from "next";
+import Pagination from "../components/Pagination";
 
 type FormInputFields = {
   name?: string;
@@ -71,18 +68,6 @@ export default function Home({
     }
   }
 
-  const handleNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
   return (
     <VStack as="section" maxWidth="714px" spacing={28} align="flex-start">
       <Logo />
@@ -132,20 +117,11 @@ export default function Home({
             />
           </>
         ))}
-        <Flex flexDirection="column" gap="1" align="center">
-          <Text>
-            <strong>{page}</strong> de{" "}
-            <strong>{Math.ceil(totalPages / 5)}</strong>
-          </Text>
-          <HStack spacing={4}>
-            <Button onClick={handlePreviousPage} disabled={page === 1}>
-              <AiOutlineArrowLeft />
-            </Button>
-            <Button onClick={handleNextPage} disabled={page === totalPages}>
-              <AiOutlineArrowRight />
-            </Button>
-          </HStack>
-        </Flex>
+        <Pagination
+          totalCountOfRegisters={totalPages}
+          currentPage={page}
+          onPageChange={() => {}}
+        />
       </VStack>
     </VStack>
   );
