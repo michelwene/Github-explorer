@@ -7,5 +7,6 @@ export interface IRepositoryData {
   open_issues: number;
   owner: {
     avatar_url: string;
+    login: string;
   };
 }

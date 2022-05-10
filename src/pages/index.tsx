@@ -14,9 +14,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "../components/Form/input";
 import { api } from "../services/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IRepositoryData } from "../types/repository";
 import Pagination from "../components/Pagination";
+import Repositorie from "./repository/[id]";
+import Router from "next/router";
 
 type FormInputFields = {
   name?: string;
@@ -44,7 +46,7 @@ export default function Home({
   });
 
   const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [repositorie, setRepositorie] =
     useState<IRepositoryData[]>(initialData);
@@ -55,12 +57,13 @@ export default function Home({
       setLoading(true);
       const response = await api.get(`/search/repositories?q=${data.name}`, {
         params: {
-          page: page,
+          page: 1 + page,
           per_page: 5,
         },
       });
       setRepositorie(response.data.items);
       setTotalPages(response.data.total_count);
+      setPage(page + 1);
     } catch (err) {
       console.log(err);
     } finally {
@@ -112,16 +115,11 @@ export default function Home({
               description={repo.description}
               imageUrl={repo.owner.avatar_url}
               onClick={() => {
-                console.log(repo);
+                Router.push(`/repository/${repo.id}`);
               }}
             />
           </>
         ))}
-        <Pagination
-          totalCountOfRegisters={totalPages}
-          currentPage={page}
-          onPageChange={() => {}}
-        />
       </VStack>
     </VStack>
   );

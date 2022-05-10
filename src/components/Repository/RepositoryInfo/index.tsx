@@ -1,12 +1,12 @@
 import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 
 interface RepositoryInfoProps {
-  name: string;
-  description: string;
-  stars: number;
-  forks: number;
-  issues: number;
-  imageUrl: string;
+  name?: string;
+  description?: string;
+  stars?: number;
+  forks?: number;
+  issues?: number;
+  imageUrl?: string;
   children?: React.ReactNode;
 }
 
@@ -18,7 +18,6 @@ export function RepositoryInfo({
   issues,
   children,
   imageUrl,
-  ...rest
 }: RepositoryInfoProps) {
   return (
     <>
@@ -29,6 +28,8 @@ export function RepositoryInfo({
               src={imageUrl}
               alt={`foto de perfil do github ${name}`}
               borderRadius="50%"
+              height="120px"
+              width="120px"
             />
           </Box>
           <Flex flexDirection="column">

@@ -8,12 +8,38 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { MdExplore } from "react-icons/md";
 import { Logo } from "../../components/Logo";
 import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
+import { api } from "../../services/api";
+import { IRepositoryData } from "../../types/repository";
+
+interface IPropsRepository {
+  full_name: string;
+  description: string;
+  forks: number;
+  watchers: number;
+  open_issues: number;
+  owner: {
+    avatar_url: string;
+    login: string;
+  };
+}
 
 export default function Repositorie() {
+  const [repository, setRepository] = useState<IPropsRepository>();
+  const { query } = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      const response = await api.get(`/repositories/${query.id}`);
+      setRepository(response.data);
+    })();
+  }, []);
+
+  console.log(repository);
   return (
     <VStack
       as="section"
@@ -45,12 +71,12 @@ export default function Repositorie() {
         </Flex>
       </Flex>
       <RepositoryInfo
-        imageUrl="Me1.svg"
-        name="tiagoluchtenberg/repo"
-        description="Descrição do repo"
-        stars={1080}
-        forks={20}
-        issues={67}
+        imageUrl={repository?.owner.avatar_url}
+        name={repository?.full_name}
+        description={repository?.description}
+        stars={repository?.watchers}
+        forks={repository?.forks}
+        issues={repository?.open_issues}
       />
 
       <VStack spacing={4} width="100%" pb="1rem">
