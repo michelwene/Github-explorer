@@ -36,6 +36,7 @@ export default function Repositorie() {
       const response = await api.get(`/repositories/${query.id}`);
       setRepository(response.data);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   console.log(repository);
