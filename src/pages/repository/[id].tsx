@@ -14,7 +14,6 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { Logo } from "../../components/Logo";
 import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
 import { api } from "../../services/api";
-import { IRepositoryData } from "../../types/repository";
 
 interface IPropsRepository {
   full_name: string;

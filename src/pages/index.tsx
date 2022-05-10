@@ -16,8 +16,6 @@ import { Input } from "../components/Form/input";
 import { api } from "../services/api";
 import { useEffect, useState } from "react";
 import { IRepositoryData } from "../types/repository";
-import Pagination from "../components/Pagination";
-import Repositorie from "./repository/[id]";
 import Router from "next/router";
 
 type FormInputFields = {

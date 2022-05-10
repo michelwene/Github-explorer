@@ -16,7 +16,6 @@ export function RepositoryInfo({
   stars,
   forks,
   issues,
-  children,
   imageUrl,
 }: RepositoryInfoProps) {
   return (
