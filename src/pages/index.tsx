@@ -22,7 +22,7 @@ type FormInputFields = {
   name?: string;
 };
 
-interface IProps {
+export interface IProps {
   repositories: IRepositoryData[];
   total_count: number;
 }
@@ -43,25 +43,24 @@ export default function Home({
     resolver: yupResolver(schemaFromInputField),
   });
 
-  const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [repositorie, setRepositorie] =
     useState<IRepositoryData[]>(initialData);
 
   async function handleSubmitForm(data: FormInputFields) {
+    const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const pageSort = Math.floor(Math.random() * pages.length);
+
     await new Promise((resolve) => setTimeout(resolve, 2000));
     try {
       setLoading(true);
       const response = await api.get(`/search/repositories?q=${data.name}`, {
         params: {
-          page: 1 + page,
+          page: pageSort,
           per_page: 5,
         },
       });
       setRepositorie(response.data.items);
-      setTotalPages(response.data.total_count);
-      setPage(page + 1);
     } catch (err) {
       console.log(err);
     } finally {
