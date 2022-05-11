@@ -17,6 +17,7 @@ import { api } from "../services/api";
 import { useEffect, useState } from "react";
 import { IRepositoryData } from "../types/repository";
 import Router from "next/router";
+import { RepositorySkeleton } from "../components/Repository/RepositoryItem/skeleton";
 
 type FormInputFields = {
   name?: string;
@@ -24,17 +25,13 @@ type FormInputFields = {
 
 export interface IProps {
   repositories: IRepositoryData[];
-  total_count: number;
 }
 
 const schemaFromInputField = yup.object({
   name: yup.string().required("Digite o nome do repositório"),
 });
 
-export default function Home({
-  total_count: initialTotalPages,
-  repositories: initialData,
-}: IProps) {
+export default function Home({ repositories: initialData }: IProps) {
   const {
     register,
     handleSubmit,
@@ -60,6 +57,7 @@ export default function Home({
           per_page: 5,
         },
       });
+
       setRepositorie(response.data.items);
     } catch (err) {
       console.log(err);
@@ -110,19 +108,23 @@ export default function Home({
         </Flex>
       </Flex>
       <VStack spacing={4} width="100%" pb="1rem">
-        {repositorie?.map((repo) => (
-          <>
-            <RepositoryItem
-              key={repo.id}
-              name={repo.full_name}
-              description={repo.description}
-              imageUrl={repo.owner.avatar_url}
-              onClick={() => {
-                Router.push(`/repository/${repo.id}`);
-              }}
-            />
-          </>
-        ))}
+        {loading
+          ? Array(5)
+              .fill(0)
+              .map((_, index) => <RepositorySkeleton key={index} />)
+          : repositorie?.map((repo) => (
+              <>
+                <RepositoryItem
+                  key={repo.id}
+                  name={repo.full_name}
+                  description={repo.description}
+                  imageUrl={repo.owner.avatar_url}
+                  onClick={() => {
+                    Router.push(`/repository/${repo.id}`);
+                  }}
+                />
+              </>
+            ))}
       </VStack>
     </VStack>
   );
