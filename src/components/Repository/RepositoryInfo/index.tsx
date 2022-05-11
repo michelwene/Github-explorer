@@ -20,7 +20,7 @@ export function RepositoryInfo({
 }: RepositoryInfoProps) {
   return (
     <>
-      <Flex flexDirection="column" gap="2.5rem">
+      <Flex flexDirection="column" gap="2.5rem" pb="6rem">
         <Flex gap="2rem">
           <Box>
             <Image

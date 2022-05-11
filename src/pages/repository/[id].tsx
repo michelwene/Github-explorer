@@ -13,9 +13,11 @@ import { useEffect, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { Logo } from "../../components/Logo";
 import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
+import { UserRepositories } from "../../components/Repository/UserRepositories";
 import { api } from "../../services/api";
 
 interface IPropsRepository {
+  id: number;
   full_name: string;
   description: string;
   forks: number;
@@ -29,30 +31,49 @@ interface IPropsRepository {
 
 export default function Repositorie() {
   const [repository, setRepository] = useState<IPropsRepository>();
+  const [repositories, setRepositories] = useState<IPropsRepository[]>([]);
   const { query } = useRouter();
 
   useEffect(() => {
     (async () => {
       const response = await api.get(`/repositories/${query.id}`);
+
       setRepository(response.data);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(repository);
+  let ownerLogin = repository?.owner.login;
+
+  useEffect(() => {
+    (async () => {
+      const response = await api.get(`/users/${ownerLogin}/repos`, {
+        params: {
+          per_page: 5,
+        },
+      });
+
+      setRepositories(response.data);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repository]);
+
   return (
     <VStack
       as="section"
       maxWidth="714px"
-      spacing="6rem"
+      spacing="1rem"
       width="960px"
       align="flex-start"
+      pb={4}
     >
       <Flex
         as="header"
         width="100%"
         gap={4}
         mt={10}
+        pb="6rem"
+        align="center"
         justifyContent="space-between"
       >
         <Logo />
@@ -78,53 +99,15 @@ export default function Repositorie() {
         forks={repository?.forks}
         issues={repository?.open_issues}
       />
-
-      <VStack spacing={4} width="100%" pb="1rem">
-        <Flex
-          align="center"
-          bg="white"
-          borderRadius="5px"
-          justifyContent="space-between"
-          p="1rem"
-          width="100%"
-        >
-          <Flex gap="1.3rem" align="center">
-            <Flex flexDirection="column">
-              <Heading as="h2" fontSize="1.5rem">
-                gostack-desafio-conceitos-react-native
-              </Heading>
-              <Text fontSize="1.2rem" color="gray.200">
-                Diego Fernandes
-              </Text>
-            </Flex>
-          </Flex>
-          <Box>
-            <AiOutlineRight color="gray.100" />
-          </Box>
-        </Flex>
-        <Flex
-          align="center"
-          bg="white"
-          borderRadius="5px"
-          justifyContent="space-between"
-          p="1rem"
-          width="100%"
-        >
-          <Flex gap="1.3rem" align="center">
-            <Flex flexDirection="column">
-              <Heading as="h2" fontSize="1.5rem">
-                gostack-desafio-conceitos-react-native
-              </Heading>
-              <Text fontSize="1.2rem" color="gray.200">
-                Diego Fernandes
-              </Text>
-            </Flex>
-          </Flex>
-          <Box>
-            <AiOutlineRight color="gray.100" />
-          </Box>
-        </Flex>
-      </VStack>
+      {repositories?.map((repo) => (
+        <>
+          <UserRepositories
+            key={repo.id}
+            name={repo.full_name}
+            full_name={repo.owner.login}
+          />
+        </>
+      ))}
     </VStack>
   );
 }
