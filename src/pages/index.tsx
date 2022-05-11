@@ -70,7 +70,13 @@ export default function Home({
   }
 
   return (
-    <VStack as="section" maxWidth="714px" spacing={28} align="flex-start">
+    <VStack
+      as="section"
+      maxWidth="714px"
+      spacing={28}
+      align="flex-start"
+      pt={4}
+    >
       <Logo />
       <Flex flexDirection="column" gap={10}>
         <Heading as="h1" fontSize="3rem" fontWeight={700}>

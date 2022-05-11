@@ -4,9 +4,14 @@ import { AiOutlineRight } from "react-icons/ai";
 interface IPropsRepository {
   name?: string;
   full_name?: string;
+  onClick?: () => void;
 }
 
-export function UserRepositories({ name, full_name }: IPropsRepository) {
+export function UserRepositories({
+  name,
+  full_name,
+  onClick,
+}: IPropsRepository) {
   return (
     <>
       <VStack spacing={4} width="100%">
@@ -28,7 +33,7 @@ export function UserRepositories({ name, full_name }: IPropsRepository) {
               </Text>
             </Flex>
           </Flex>
-          <Box>
+          <Box onClick={onClick} cursor="pointer">
             <AiOutlineRight color="gray.100" />
           </Box>
         </Flex>

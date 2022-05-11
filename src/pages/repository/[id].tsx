@@ -8,6 +8,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import Router from "next/router";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
@@ -23,6 +24,7 @@ interface IPropsRepository {
   forks: number;
   watchers: number;
   open_issues: number;
+  html_url: string;
   owner: {
     avatar_url: string;
     login: string;
@@ -58,6 +60,7 @@ export default function Repositorie() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repository]);
 
+  console.log(repositories);
   return (
     <VStack
       as="section"
@@ -105,6 +108,9 @@ export default function Repositorie() {
             key={repo.id}
             name={repo.full_name}
             full_name={repo.owner.login}
+            onClick={() => {
+              Router.push(`${repo.html_url}`);
+            }}
           />
         </>
       ))}
