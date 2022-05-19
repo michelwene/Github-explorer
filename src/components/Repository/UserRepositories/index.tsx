@@ -33,7 +33,7 @@ export function UserRepositories({
               </Text>
             </Flex>
           </Flex>
-          <Box onClick={onClick} cursor="pointer">
+          <Box onClick={onClick} cursor="pointer" as="a" target="_blank">
             <AiOutlineRight color="gray.100" />
           </Box>
         </Flex>

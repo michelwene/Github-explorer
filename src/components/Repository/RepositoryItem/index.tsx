@@ -5,7 +5,7 @@ interface RepositoryProps {
   name: string;
   description: string;
   imageUrl?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export function RepositoryItem({
@@ -43,7 +43,7 @@ export function RepositoryItem({
             </Text>
           </Flex>
         </Flex>
-        <Box onClick={onClick} cursor="pointer">
+        <Box onClick={onClick} cursor="pointer" as="a" target="_blank">
           <AiOutlineRight color="gray.100" />
         </Box>
       </Flex>

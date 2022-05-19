@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { Logo } from "../../components/Logo";
 import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
+import { RepositorySkeleton } from "../../components/Repository/RepositoryItem/skeleton";
 import { UserRepositories } from "../../components/Repository/UserRepositories";
 import { api } from "../../services/api";
 
@@ -34,6 +35,7 @@ interface IPropsRepository {
 export default function Repositorie() {
   const [repository, setRepository] = useState<IPropsRepository>();
   const [repositories, setRepositories] = useState<IPropsRepository[]>([]);
+  const [loading, setLoading] = useState(false);
   const { query } = useRouter();
 
   useEffect(() => {
@@ -48,15 +50,22 @@ export default function Repositorie() {
   let ownerLogin = repository?.owner.login;
 
   useEffect(() => {
-    (async () => {
-      const response = await api.get(`/users/${ownerLogin}/repos`, {
-        params: {
-          per_page: 5,
-        },
-      });
+    try {
+      setLoading(true);
+      (async () => {
+        const response = await api.get(`/users/${ownerLogin}/repos`, {
+          params: {
+            per_page: 5,
+          },
+        });
 
-      setRepositories(response.data);
-    })();
+        setRepositories(response.data);
+      })();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repository]);
 
@@ -102,18 +111,22 @@ export default function Repositorie() {
         forks={repository?.forks}
         issues={repository?.open_issues}
       />
-      {repositories?.map((repo) => (
-        <>
-          <UserRepositories
-            key={repo.id}
-            name={repo.full_name}
-            full_name={repo.owner.login}
-            onClick={() => {
-              Router.push(`${repo.html_url}`);
-            }}
-          />
-        </>
-      ))}
+      {loading
+        ? Array(5)
+            .fill(0)
+            .map((_, index) => <RepositorySkeleton key={index} />)
+        : repositories?.map((repo) => (
+            <>
+              <UserRepositories
+                key={repo.id}
+                name={repo.full_name}
+                full_name={repo.owner.login}
+                onClick={() => {
+                  Router.push(`${repo.html_url}`);
+                }}
+              />
+            </>
+          ))}
     </VStack>
   );
 }
