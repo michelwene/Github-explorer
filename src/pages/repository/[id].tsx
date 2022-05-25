@@ -40,12 +40,15 @@ export default function Repositorie() {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`/repositories/${query.id}`);
+      try {
+        const response = await api.get(`/repositories/${query.id}`);
 
-      setRepository(response.data);
+        setRepository(response.data);
+      } catch (err) {
+        console.log(err);
+      }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [query.id]);
 
   let ownerLogin = repository?.owner.login;
 

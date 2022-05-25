@@ -43,6 +43,7 @@ export default function Home({ repositories: initialData }: IProps) {
   const [loading, setLoading] = useState(false);
   const [repositorie, setRepositorie] =
     useState<IRepositoryData[]>(initialData);
+  const [firstRender, setFirstRender] = useState(true);
 
   async function handleSubmitForm(data: FormInputFields) {
     const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -59,6 +60,7 @@ export default function Home({ repositories: initialData }: IProps) {
       });
 
       setRepositorie(response.data.items);
+      setFirstRender(false);
     } catch (err) {
       console.log(err);
     } finally {
@@ -107,25 +109,31 @@ export default function Home({ repositories: initialData }: IProps) {
           </Button>
         </Flex>
       </Flex>
-      <VStack spacing={4} width="100%" pb="1rem">
-        {loading
-          ? Array(5)
-              .fill(0)
-              .map((_, index) => <RepositorySkeleton key={index} />)
-          : repositorie?.map((repo) => (
-              <>
-                <RepositoryItem
-                  key={repo.id}
-                  name={repo.full_name}
-                  description={repo.description}
-                  imageUrl={repo.owner.avatar_url}
-                  onClick={() => {
-                    Router.push(`/repository/${repo.id}`);
-                  }}
-                />
-              </>
-            ))}
-      </VStack>
+      {firstRender ? (
+        <Box width="100%" color="green" fontWeight={600}>
+          Digite no campo acima para realizar uma busca 👆.
+        </Box>
+      ) : (
+        <VStack spacing={4} width="100%" pb="1rem">
+          {loading
+            ? Array(5)
+                .fill(0)
+                .map((_, index) => <RepositorySkeleton key={index} />)
+            : repositorie?.map((repo) => (
+                <>
+                  <RepositoryItem
+                    key={repo.id}
+                    name={repo.full_name}
+                    description={repo.description}
+                    imageUrl={repo.owner.avatar_url}
+                    onClick={() => {
+                      Router.push(`/repository/${repo.id}`);
+                    }}
+                  />
+                </>
+              ))}
+        </VStack>
+      )}
     </VStack>
   );
 }
