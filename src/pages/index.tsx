@@ -7,59 +7,51 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
 import { Logo } from "../components/Logo";
 import { RepositoryItem } from "../components/Repository/RepositoryItem";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "../components/Form/input";
 import { api } from "../services/api";
 import { useEffect, useState } from "react";
 import { IRepositoryData } from "../types/repository";
 import Router from "next/router";
 import { RepositorySkeleton } from "../components/Repository/RepositoryItem/skeleton";
-
-type FormInputFields = {
-  name?: string;
-};
+import { RiArrowRightLine, RiArrowLeftLine } from "react-icons/ri";
 
 export interface IProps {
   repositories: IRepositoryData[];
+  totalCount: number;
 }
 
-const schemaFromInputField = yup.object({
-  name: yup.string().required("Digite o nome do repositório"),
-});
-
-export default function Home({ repositories: initialData }: IProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: yupResolver(schemaFromInputField),
-  });
-
+export default function Home({
+  repositories: initialData,
+  totalCount: initialTotalCount,
+}: IProps) {
   const [loading, setLoading] = useState(false);
   const [repositorie, setRepositorie] =
     useState<IRepositoryData[]>(initialData);
   const [firstRender, setFirstRender] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(initialTotalCount);
+  const [search, setSearch] = useState("");
+  const [errorSearchRepositorie, setErrorSearchRepositorie] = useState(false);
 
-  async function handleSubmitForm(data: FormInputFields) {
-    const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const pageSort = Math.floor(Math.random() * pages.length);
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  async function handleSubmitInput() {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await api.get(`/search/repositories?q=${data.name}`, {
+      const { data } = await api.get(`/search/repositories?q=${search}`, {
         params: {
-          page: pageSort,
+          page: page,
           per_page: 5,
         },
       });
+      if (data.items.length === 0) {
+        setErrorSearchRepositorie(true);
+        return;
+      }
+      data.total_count = Math.round(data.total_count / 5);
 
-      setRepositorie(response.data.items);
+      setRepositorie(data.items);
+      setTotalPages(data.total_count);
       setFirstRender(false);
     } catch (err) {
       console.log(err);
@@ -67,6 +59,23 @@ export default function Home({ repositories: initialData }: IProps) {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    handleSubmitInput();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <VStack
@@ -81,20 +90,17 @@ export default function Home({ repositories: initialData }: IProps) {
         <Heading as="h1" fontSize="3rem" fontWeight={700}>
           Explore repositórios no Github.
         </Heading>
-        <Flex
-          as="form"
-          height="4.5rem"
-          onSubmit={handleSubmit(handleSubmitForm)}
-        >
+        <Flex height="4.5rem">
           <Input
+            name="search"
             bg="white"
             border="none"
             borderRightRadius="0"
             colorScheme="whiteAlpha"
             height="100%"
             placeholder="Digite aqui"
-            {...register("name")}
-            error={errors.name}
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
           <Button
             type="submit"
@@ -103,36 +109,52 @@ export default function Home({ repositories: initialData }: IProps) {
             minWidth="210px"
             borderLeftRadius="0"
             loadingText="Pesquisando..."
-            isLoading={isSubmitting}
+            onClick={() => handleSubmitInput()}
           >
-            Pesquisar
+            {loading ? "Pesquisando..." : "Pesquisar"}
           </Button>
         </Flex>
+        {errorSearchRepositorie && <Text>Nenhum repositório encontrado</Text>}
       </Flex>
       {firstRender ? (
         <Box width="100%" color="green" fontWeight={600}>
           Digite no campo acima para realizar uma busca 👆.
         </Box>
       ) : (
-        <VStack spacing={4} width="100%" pb="1rem">
-          {loading
-            ? Array(5)
-                .fill(0)
-                .map((_, index) => <RepositorySkeleton key={index} />)
-            : repositorie?.map((repo) => (
-                <>
-                  <RepositoryItem
-                    key={repo.id}
-                    name={repo.full_name}
-                    description={repo.description}
-                    imageUrl={repo.owner.avatar_url}
-                    onClick={() => {
-                      Router.push(`/repository/${repo.id}`);
-                    }}
-                  />
-                </>
-              ))}
-        </VStack>
+        <>
+          <VStack spacing={4} width="100%" pb="1rem">
+            {loading
+              ? Array(5)
+                  .fill(0)
+                  .map((_, index) => <RepositorySkeleton key={index} />)
+              : repositorie?.map((repo) => (
+                  <>
+                    <RepositoryItem
+                      key={repo.id}
+                      name={repo.full_name}
+                      description={repo.description}
+                      imageUrl={repo.owner.avatar_url}
+                      onClick={() => {
+                        Router.push(`/repository/${repo.id}`);
+                      }}
+                    />
+                  </>
+                ))}
+            <Flex align="center" gap={8}>
+              <Text>
+                Página <strong>{page}</strong> de <strong>{totalPages}</strong>
+              </Text>
+              <Flex gap={4}>
+                <Button onClick={handlePreviousPage} disabled={page === 1}>
+                  <RiArrowLeftLine />
+                </Button>
+                <Button onClick={handleNextPage} disabled={page === totalPages}>
+                  <RiArrowRightLine />
+                </Button>
+              </Flex>
+            </Flex>
+          </VStack>
+        </>
       )}
     </VStack>
   );

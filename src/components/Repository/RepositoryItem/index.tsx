@@ -25,15 +25,15 @@ export function RepositoryItem({
         width="100%"
       >
         <Flex gap="1.3rem" align="center">
-          <Box>
+          <Flex height="80px" width="80px">
             <Image
               src={imageUrl}
               alt={`Icone imagem usuário ${name}`}
               borderRadius="50%"
-              height="80px"
-              width="80px"
+              height="100%"
+              minWidth="80px"
             />
-          </Box>
+          </Flex>
           <Flex flexDirection="column">
             <Heading as="h2" fontSize="1.5rem">
               {name}
