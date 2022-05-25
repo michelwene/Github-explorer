@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { AxiosError } from "axios";
 import Link from "next/link";
 import Router from "next/router";
 import { useRouter } from "next/router";
@@ -36,6 +37,7 @@ export default function Repositorie() {
   const [repository, setRepository] = useState<IPropsRepository>();
   const [repositories, setRepositories] = useState<IPropsRepository[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const { query } = useRouter();
 
   useEffect(() => {
@@ -45,7 +47,11 @@ export default function Repositorie() {
 
         setRepository(response.data);
       } catch (err) {
-        console.log(err);
+        const error = err as AxiosError;
+        if (error.response?.status === 404) {
+          setError(true);
+          return;
+        }
       }
     })();
   }, [query.id]);
@@ -72,7 +78,6 @@ export default function Repositorie() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repository]);
 
-  console.log(repositories);
   return (
     <VStack
       as="section"
@@ -106,30 +111,58 @@ export default function Repositorie() {
           </Link>
         </Flex>
       </Flex>
-      <RepositoryInfo
-        imageUrl={repository?.owner.avatar_url}
-        name={repository?.full_name}
-        description={repository?.description}
-        stars={repository?.watchers}
-        forks={repository?.forks}
-        issues={repository?.open_issues}
-      />
-      {loading
-        ? Array(5)
-            .fill(0)
-            .map((_, index) => <RepositorySkeleton key={index} />)
-        : repositories?.map((repo) => (
-            <>
-              <UserRepositories
-                key={repo.id}
-                name={repo.full_name}
-                full_name={repo.owner.login}
-                onClick={() => {
-                  Router.push(`${repo.html_url}`);
-                }}
-              />
-            </>
-          ))}
+      {error ? (
+        <Flex flexDirection="column" align="center">
+          <Box>
+            <Heading
+              as="h1"
+              fontSize="3rem"
+              fontWeight={700}
+              textAlign="center"
+            >
+              Oops!
+            </Heading>
+            <Heading
+              as="h2"
+              fontSize="2rem"
+              fontWeight={700}
+              textAlign="center"
+            >
+              Não encontramos o repositório que você procura.
+            </Heading>
+          </Box>
+          <Box fontWeight={900} fontSize={100}>
+            404
+          </Box>
+        </Flex>
+      ) : (
+        <>
+          <RepositoryInfo
+            imageUrl={repository?.owner.avatar_url}
+            name={repository?.full_name}
+            description={repository?.description}
+            stars={repository?.watchers}
+            forks={repository?.forks}
+            issues={repository?.open_issues}
+          />
+          {loading
+            ? Array(5)
+                .fill(0)
+                .map((_, index) => <RepositorySkeleton key={index} />)
+            : repositories?.map((repo) => (
+                <>
+                  <UserRepositories
+                    key={repo.id}
+                    name={repo.full_name}
+                    full_name={repo.owner.login}
+                    onClick={() => {
+                      Router.push(`${repo.html_url}`);
+                    }}
+                  />
+                </>
+              ))}
+        </>
+      )}
     </VStack>
   );
 }

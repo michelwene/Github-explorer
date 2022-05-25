@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { Logo } from "../components/Logo";
@@ -16,6 +17,7 @@ import { IRepositoryData } from "../types/repository";
 import Router from "next/router";
 import { RepositorySkeleton } from "../components/Repository/RepositoryItem/skeleton";
 import { RiArrowRightLine, RiArrowLeftLine } from "react-icons/ri";
+import { AxiosError } from "axios";
 
 export interface IProps {
   repositories: IRepositoryData[];
@@ -34,27 +36,25 @@ export default function Home({
   const [totalPages, setTotalPages] = useState(initialTotalCount);
   const [search, setSearch] = useState("");
   const [errorSearchRepositorie, setErrorSearchRepositorie] = useState(false);
+  const id = "";
+  const toast = useToast();
 
   async function handleSubmitInput() {
-    setLoading(true);
     try {
+      setLoading(true);
       const { data } = await api.get(`/search/repositories?q=${search}`, {
         params: {
           page: page,
           per_page: 5,
         },
       });
-      if (data.items.length === 0) {
-        setErrorSearchRepositorie(true);
-        return;
-      }
+
       data.total_count = Math.round(data.total_count / 5);
 
       setRepositorie(data.items);
       setTotalPages(data.total_count);
       setFirstRender(false);
     } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -110,13 +110,13 @@ export default function Home({
             borderLeftRadius="0"
             loadingText="Pesquisando..."
             onClick={() => handleSubmitInput()}
+            disabled={loading || search === "" || search.length < 3}
           >
             {loading ? "Pesquisando..." : "Pesquisar"}
           </Button>
         </Flex>
-        {errorSearchRepositorie && <Text>Nenhum repositório encontrado</Text>}
       </Flex>
-      {firstRender ? (
+      {firstRender || search === "" ? (
         <Box width="100%" color="green" fontWeight={600}>
           Digite no campo acima para realizar uma busca 👆.
         </Box>
