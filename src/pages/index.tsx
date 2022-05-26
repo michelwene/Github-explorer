@@ -18,6 +18,7 @@ import Router from "next/router";
 import { RepositorySkeleton } from "../components/Repository/RepositoryItem/skeleton";
 import { RiArrowRightLine, RiArrowLeftLine } from "react-icons/ri";
 import { AxiosError } from "axios";
+import { Error } from "../components/PageError";
 
 export interface IProps {
   repositories: IRepositoryData[];
@@ -35,9 +36,7 @@ export default function Home({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(initialTotalCount);
   const [search, setSearch] = useState("");
-  const [errorSearchRepositorie, setErrorSearchRepositorie] = useState(false);
-  const id = "";
-  const toast = useToast();
+  const [error, setError] = useState(false);
 
   async function handleSubmitInput() {
     try {
@@ -54,7 +53,9 @@ export default function Home({
       setRepositorie(data.items);
       setTotalPages(data.total_count);
       setFirstRender(false);
+      setError(false);
     } catch (err) {
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -76,6 +77,12 @@ export default function Home({
       setPage(page - 1);
     }
   };
+
+  function disappearError() {
+    setTimeout(() => {
+      setFirstRender(true);
+    }, 3000);
+  }
 
   return (
     <VStack
@@ -116,13 +123,22 @@ export default function Home({
           </Button>
         </Flex>
       </Flex>
-      {firstRender || search === "" ? (
+      {firstRender ? (
         <Box width="100%" color="green" fontWeight={600}>
           Digite no campo acima para realizar uma busca 👆.
         </Box>
       ) : (
         <>
           <VStack spacing={4} width="100%" pb="1rem">
+            {repositorie.length === 0 ? (
+              <>
+                <Error
+                  error=""
+                  message={`nenhum repositório encontrado com ${search}`}
+                />
+                {disappearError()}
+              </>
+            ) : null}
             {loading
               ? Array(5)
                   .fill(0)

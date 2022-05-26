@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import Router from "next/router";
@@ -14,12 +6,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { Logo } from "../../components/Logo";
+import { Error } from "../../components/PageError";
 import { RepositoryInfo } from "../../components/Repository/RepositoryInfo";
 import { RepositorySkeleton } from "../../components/Repository/RepositoryItem/skeleton";
 import { UserRepositories } from "../../components/Repository/UserRepositories";
 import { api } from "../../services/api";
 
-interface IPropsRepository {
+interface RepositoryProps {
   id: number;
   full_name: string;
   description: string;
@@ -34,8 +27,8 @@ interface IPropsRepository {
 }
 
 export default function Repositorie() {
-  const [repository, setRepository] = useState<IPropsRepository>();
-  const [repositories, setRepositories] = useState<IPropsRepository[]>([]);
+  const [repository, setRepository] = useState<RepositoryProps>();
+  const [repositories, setRepositories] = useState<RepositoryProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { query } = useRouter();
@@ -47,11 +40,12 @@ export default function Repositorie() {
 
         setRepository(response.data);
       } catch (err) {
-        const error = err as AxiosError;
-        if (error.response?.status === 404) {
-          setError(true);
-          return;
-        }
+        console.log(err);
+        // const error = err as AxiosError;
+        // if (error.response?.status === 404) {
+        //   setError(true);
+        //   return;
+        // }
       }
     })();
   }, [query.id]);
@@ -77,6 +71,8 @@ export default function Repositorie() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repository]);
+
+  console.log(repository);
 
   return (
     <VStack
@@ -111,58 +107,38 @@ export default function Repositorie() {
           </Link>
         </Flex>
       </Flex>
-      {error ? (
-        <Flex flexDirection="column" align="center">
-          <Box>
-            <Heading
-              as="h1"
-              fontSize="3rem"
-              fontWeight={700}
-              textAlign="center"
-            >
-              Oops!
-            </Heading>
-            <Heading
-              as="h2"
-              fontSize="2rem"
-              fontWeight={700}
-              textAlign="center"
-            >
-              Não encontramos o repositório que você procura.
-            </Heading>
-          </Box>
-          <Box fontWeight={900} fontSize={100}>
-            404
-          </Box>
-        </Flex>
-      ) : (
-        <>
-          <RepositoryInfo
-            imageUrl={repository?.owner.avatar_url}
-            name={repository?.full_name}
-            description={repository?.description}
-            stars={repository?.watchers}
-            forks={repository?.forks}
-            issues={repository?.open_issues}
-          />
-          {loading
-            ? Array(5)
-                .fill(0)
-                .map((_, index) => <RepositorySkeleton key={index} />)
-            : repositories?.map((repo) => (
-                <>
-                  <UserRepositories
-                    key={repo.id}
-                    name={repo.full_name}
-                    full_name={repo.owner.login}
-                    onClick={() => {
-                      Router.push(`${repo.html_url}`);
-                    }}
-                  />
-                </>
-              ))}
-        </>
-      )}
+      {/* {error ? (
+        <Error
+          error="404"
+          message="Não encontramos o repositório que você procura."
+        />
+      ) : ( */}
+      <>
+        <RepositoryInfo
+          imageUrl={repository?.owner.avatar_url}
+          name={repository?.full_name}
+          description={repository?.description}
+          stars={repository?.watchers}
+          forks={repository?.forks}
+          issues={repository?.open_issues}
+        />
+        {loading
+          ? Array(5)
+              .fill(0)
+              .map((_, index) => <RepositorySkeleton key={index} />)
+          : repositories?.map((repo) => (
+              <>
+                <UserRepositories
+                  key={repo.id}
+                  name={repo.full_name}
+                  full_name={repo.owner.login}
+                  onClick={() => {
+                    Router.push(`${repo.html_url}`);
+                  }}
+                />
+              </>
+            ))}
+      </>
     </VStack>
   );
 }
