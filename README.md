@@ -30,7 +30,7 @@ Os usuários devem ser capazes de:
 
 - Aplicação
 
-<p>
+<p align='center'>
   <img src='/public/github.gif' alt='Gif da aplicação.'>
 </p>
 
