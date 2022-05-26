@@ -103,24 +103,24 @@ export default function Home({
           Explore repositórios no Github.
         </Heading>
         <Flex
-          height={["116px", "116px", "4.5rem"]}
-          flexDirection={["column", "column", "row"]}
-          gap={["1rem", "1rem", "0"]}
+          height={["116px", "4.5rem"]}
+          flexDirection={["column", "row"]}
+          gap={["1rem", "0"]}
         >
           <Input
             name="search"
             bg="white"
             border="none"
-            borderRightRadius="0"
+            borderRightRadius={"0"}
             colorScheme="whiteAlpha"
-            height={["50px", "100%"]}
+            height={["50px", "50px", "100%"]}
             placeholder="Digite aqui"
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
           <Button
             type="submit"
-            height={["50px", "100%"]}
+            height={["50px", "50px", "100%"]}
             colorScheme="green"
             minWidth="210px"
             borderLeftRadius="0"

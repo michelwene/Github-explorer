@@ -73,7 +73,7 @@ export default function Repositorie() {
       as="section"
       maxWidth="714px"
       spacing="1rem"
-      width="960px"
+      width={["100vw", "960px"]}
       align="flex-start"
       pb={4}
     >
@@ -84,7 +84,7 @@ export default function Repositorie() {
         mt={10}
         pb="6rem"
         align="center"
-        justifyContent="space-between"
+        justifyContent={["space-around", "space-between"]}
       >
         <Logo />
         <Flex>
@@ -101,12 +101,6 @@ export default function Repositorie() {
           </Link>
         </Flex>
       </Flex>
-      {/* {error ? (
-        <Error
-          error="404"
-          message="Não encontramos o repositório que você procura."
-        />
-      ) : ( */}
       <>
         <RepositoryInfo
           imageUrl={repository?.owner.avatar_url}

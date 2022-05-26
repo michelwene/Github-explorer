@@ -36,7 +36,7 @@ export function RepositoryInfo({
             <Text>{description}</Text>
           </Flex>
         </Flex>
-        <Flex gap="5rem">
+        <Flex gap={["2rem", "5rem"]} justifyContent={["space-around"]}>
           <Box>
             <Text fontSize="2.25rem" fontWeight={700}>
               {stars}
