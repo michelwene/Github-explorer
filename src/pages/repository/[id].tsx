@@ -30,7 +30,6 @@ export default function Repositorie() {
   const [repository, setRepository] = useState<RepositoryProps>();
   const [repositories, setRepositories] = useState<RepositoryProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const { query } = useRouter();
 
   useEffect(() => {
@@ -41,11 +40,6 @@ export default function Repositorie() {
         setRepository(response.data);
       } catch (err) {
         console.log(err);
-        // const error = err as AxiosError;
-        // if (error.response?.status === 404) {
-        //   setError(true);
-        //   return;
-        // }
       }
     })();
   }, [query.id]);

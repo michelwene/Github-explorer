@@ -94,24 +94,33 @@ export default function Home({
     >
       <Logo />
       <Flex flexDirection="column" gap={10}>
-        <Heading as="h1" fontSize="3rem" fontWeight={700}>
+        <Heading
+          as="h1"
+          fontSize="3rem"
+          fontWeight={700}
+          textAlign={["center", "left"]}
+        >
           Explore repositórios no Github.
         </Heading>
-        <Flex height="4.5rem">
+        <Flex
+          height={["116px", "116px", "4.5rem"]}
+          flexDirection={["column", "column", "row"]}
+          gap={["1rem", "1rem", "0"]}
+        >
           <Input
             name="search"
             bg="white"
             border="none"
             borderRightRadius="0"
             colorScheme="whiteAlpha"
-            height="100%"
+            height={["50px", "100%"]}
             placeholder="Digite aqui"
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
           <Button
             type="submit"
-            height="100%"
+            height={["50px", "100%"]}
             colorScheme="green"
             minWidth="210px"
             borderLeftRadius="0"
@@ -124,7 +133,12 @@ export default function Home({
         </Flex>
       </Flex>
       {firstRender ? (
-        <Box width="100%" color="green" fontWeight={600}>
+        <Box
+          width="100%"
+          color="green"
+          fontWeight={600}
+          textAlign={["center", "left"]}
+        >
           Digite no campo acima para realizar uma busca 👆.
         </Box>
       ) : (
